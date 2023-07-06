@@ -37,9 +37,9 @@ export default function ({
           onPress={() => setShowCalendar(true)}
           style={styles.calendarDate}>
           {selectedDate ? (
-            <Text>Selecionar data</Text>
-          ) : (
             <Text>Data selecionada:</Text>
+          ) : (
+            <Text>Selecionar data</Text>
           )}
           <Text>{selectedDate?.split('-').reverse().join('/')}</Text>
         </Pressable>
