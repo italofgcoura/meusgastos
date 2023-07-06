@@ -4,38 +4,27 @@ import {
   Button,
   StatusBar,
   Text,
-  useColorScheme,
   View,
-  // Modal,
   FlatList,
-  // TextInput,
-  // KeyboardAvoidingView,
-  // Platform,
-  ScrollView,
+  StyleSheet,
 } from 'react-native';
-
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ListItem from './src/components/ListItem';
 
 import Header from './src/components/Header';
-// import Calendar from './src/components/Calendar';
-// import colors from './src/constants/colors';
 import NewSpent from './src/components/NewSpent';
 
 type ItemProps = {title: string; value: number; id: string; date: string};
 
 function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const [currentItems, setCurrentItems] = useState<ItemProps[]>([]);
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  const [itemToEdit, setItemToEdit] = useState<ItemProps | undefined>(
+    undefined,
+  );
 
   useEffect(() => {
     (async () => {
@@ -75,13 +64,33 @@ function App(): JSX.Element {
     [currentItems, saveToStorage],
   );
 
+  const editItem = ({id, value, date, title}: ItemProps) => {
+    const item = currentItems.find((i: ItemProps) => i.id === id);
+
+    if (item !== undefined) {
+      item.value = value;
+      item.date = date;
+      item.title = title;
+    }
+
+    const oldItems = currentItems.filter(item => item.id !== id);
+
+    if (item) {
+      oldItems.push(item);
+
+      setCurrentItems(oldItems);
+      saveToStorage(oldItems);
+    }
+  };
+
+  const onEditPress = (item: ItemProps) => {
+    setItemToEdit(item);
+    setShowModal(true);
+  };
+
   return (
     <>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-        hidden
-      />
+      <StatusBar />
 
       <NewSpent
         showModal={showModal}
@@ -89,6 +98,9 @@ function App(): JSX.Element {
         currentItems={currentItems}
         setCurrentItems={setCurrentItems}
         saveToStorage={saveToStorage}
+        itemToEdit={itemToEdit}
+        editItem={editItem}
+        setItemToEdit={setItemToEdit}
       />
 
       <Header currentItems={currentItems} />
@@ -102,20 +114,14 @@ function App(): JSX.Element {
             id={item.id}
             date={item.date}
             removeItem={removeItem}
+            onEditPress={onEditPress}
           />
         )}
         style={{flexGrow: 1}}
         keyExtractor={item => item.id}
         contentContainerStyle={{flexGrow: 1}}
         ListEmptyComponent={() => (
-          <View
-            style={{
-              flex: 1,
-              // flexGrow: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'pink',
-            }}>
+          <View style={styles.noData}>
             <Text>tem nada aqui n</Text>
           </View>
         )}
@@ -130,177 +136,19 @@ function App(): JSX.Element {
           color={'#235789'}
         />
       </View>
-      <View>
-        <ScrollView
-          style={{
-            marginTop: 16,
-            // marginBottom: 8,
-            gap: 4,
-            // backgroundColor: 'green',
-            height: 'auto',
-            paddingBottom: 16,
-          }}
-          horizontal>
-          <View
-            style={{
-              marginHorizontal: 4,
-              height: 40,
-              width: 40,
-              // backgroundColor: 'red',
-              borderWidth: 2,
-              borderColor: '#d1d1d1',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text>JAN</Text>
-          </View>
-          <View
-            style={{
-              marginHorizontal: 4,
-              height: 40,
-              width: 40,
-              // backgroundColor: 'red',
-              borderWidth: 2,
-              borderColor: '#d1d1d1',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text>FEV</Text>
-          </View>
-          <View
-            style={{
-              marginHorizontal: 4,
-              height: 40,
-              width: 40,
-              // backgroundColor: 'red',
-              borderWidth: 2,
-              borderColor: '#d1d1d1',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text>MAR</Text>
-          </View>
-          <View
-            style={{
-              marginHorizontal: 4,
-              height: 40,
-              width: 40,
-              // backgroundColor: 'red',
-              borderWidth: 2,
-              borderColor: '#d1d1d1',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text>ABR</Text>
-          </View>
-          <View
-            style={{
-              marginHorizontal: 4,
-              height: 40,
-              width: 40,
-              // backgroundColor: 'red',
-              borderWidth: 2,
-              borderColor: '#d1d1d1',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text>MAI</Text>
-          </View>
-          <View
-            style={{
-              marginHorizontal: 4,
-              height: 40,
-              width: 40,
-              // backgroundColor: 'red',
-              borderWidth: 2,
-              borderColor: '#d1d1d1',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text>JUN</Text>
-          </View>
-          <View
-            style={{
-              marginHorizontal: 4,
-              height: 40,
-              width: 40,
-              // backgroundColor: 'red',
-              borderWidth: 2,
-              borderColor: '#d1d1d1',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text>JUL</Text>
-          </View>
-          <View
-            style={{
-              marginHorizontal: 4,
-              height: 40,
-              width: 40,
-              // backgroundColor: 'red',
-              borderWidth: 2,
-              borderColor: '#d1d1d1',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text>AGO</Text>
-          </View>
-          <View
-            style={{
-              marginHorizontal: 4,
-              height: 40,
-              width: 40,
-              // backgroundColor: 'red',
-              borderWidth: 2,
-              borderColor: '#d1d1d1',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text>SET</Text>
-          </View>
-          <View
-            style={{
-              marginHorizontal: 4,
-              height: 40,
-              width: 40,
-              // backgroundColor: 'red',
-              borderWidth: 2,
-              borderColor: '#d1d1d1',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text>OUT</Text>
-          </View>
-          <View
-            style={{
-              marginHorizontal: 4,
-              height: 40,
-              width: 40,
-              // backgroundColor: 'red',
-              borderWidth: 2,
-              borderColor: '#d1d1d1',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text>NOV</Text>
-          </View>
-          <View
-            style={{
-              marginHorizontal: 4,
-              height: 40,
-              width: 40,
-              // backgroundColor: 'red',
-              borderWidth: 2,
-              borderColor: '#d1d1d1',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text>DEZ</Text>
-          </View>
-        </ScrollView>
-      </View>
+      {/* <MonthFilter /> */}
     </>
   );
 }
 
 export default App;
+
+const styles = StyleSheet.create({
+  noData: {
+    flex: 1,
+    // flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'pink',
+  },
+});

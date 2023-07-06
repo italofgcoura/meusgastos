@@ -1,5 +1,7 @@
-import {Text, View, StyleSheet} from 'react-native';
+import {Text, View, StyleSheet, Image} from 'react-native';
 import colors from '../../constants/colors';
+
+import bg from '../../../assets/default_765x625.png';
 
 type ItemProps = {
   currentItems?: any;
@@ -14,7 +16,13 @@ export default function ({currentItems, title}: ItemProps) {
           ? styles.container
           : {...styles.container, justifyContent: 'center'}
       }>
-      <Text style={styles.title}>{title ? title : 'Meus Gastos'}</Text>
+      <View style={{alignItems: 'center', backgroundColor: 'red'}}>
+        <Image
+          source={bg}
+          style={{width: 135, height: 80, objectFit: 'contain'}}
+        />
+      </View>
+      <Text style={styles.title}>{title ? title : ''}</Text>
 
       {currentItems && (
         <Text style={styles.total}>
@@ -36,20 +44,20 @@ export default function ({currentItems, title}: ItemProps) {
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 24,
+    paddingVertical: 16,
     paddingHorizontal: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: colors.yellowFade,
+    backgroundColor: colors.yellow,
   },
   title: {
     fontWeight: 'bold',
     fontSize: 24,
-    color: colors.black,
+    color: colors.blackFade,
   },
   total: {
-    color: colors.black,
+    color: colors.blackFade,
     fontSize: 18,
     fontWeight: 'bold',
   },

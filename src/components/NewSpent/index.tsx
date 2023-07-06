@@ -1,7 +1,8 @@
-import {useCallback, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 
 import {
   Button,
+  Keyboard,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -13,12 +14,17 @@ import Calendar from '../Calendar';
 import colors from '../../constants/colors';
 import Header from '../Header';
 
+type Item = {title: string; value: number; id: string; date: string};
+
 type ItemProps = {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   currentItems: any;
   setCurrentItems: React.Dispatch<React.SetStateAction<any>>;
   saveToStorage: (newItems: any) => void;
+  editItem: ({id, value, date, title}: Item) => void;
+  setItemToEdit: React.Dispatch<React.SetStateAction<Item | undefined>>;
+  itemToEdit?: Item;
 };
 
 export default function ({
@@ -27,12 +33,35 @@ export default function ({
   currentItems,
   setCurrentItems,
   saveToStorage,
+  itemToEdit,
+  editItem,
+  setItemToEdit,
 }: ItemProps) {
   const [showCalendar, setShowCalendar] = useState<boolean>(false);
   const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [spentDescription, setSpentDescription] = useState<string>('');
-  const [spent, setNewSpent] = useState<string>('');
+  const [spent, setNewSpent] = useState<string | number>('');
+
+  console.log('  itemToEdit', itemToEdit);
+
+  useEffect(() => {
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      inputBlur();
+    });
+
+    return () => {
+      hideSubscription.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (itemToEdit) {
+      setNewSpent(itemToEdit.value.toString());
+      setSpentDescription(itemToEdit.title);
+      setSelectedDate(itemToEdit.date);
+    }
+  }, [itemToEdit]);
 
   const inputFocus = () => {
     if (showCalendar) {
@@ -50,10 +79,15 @@ export default function ({
     setNewSpent('');
     setSpentDescription('');
     setSelectedDate('');
+    setItemToEdit(undefined);
   }, []);
 
   const saveNewSpent = useCallback(
-    async (newSpend: string, description: string, date: string) => {
+    async (
+      newSpend: string | number,
+      description: string,
+      date: Date | string,
+    ) => {
       const oldItems = [...currentItems];
 
       oldItems.push({
@@ -63,15 +97,31 @@ export default function ({
         date: date,
       });
 
-      oldItems.sort(function (a: ItemProps, b: ItemProps) {
-        return new Date(a.date) - new Date(b.date);
+      oldItems.sort(function (a, b) {
+        return a.date - b.date;
       });
 
       setCurrentItems(oldItems);
-      await saveToStorage(oldItems);
+      saveToStorage(oldItems);
+      resetInputFields();
     },
-    [currentItems, saveToStorage, setCurrentItems],
+    [currentItems, saveToStorage, setCurrentItems, resetInputFields],
   );
+
+  const onSaveButtonPress = () => {
+    if (itemToEdit) {
+      editItem({
+        id: itemToEdit.id,
+        value: Number(spent),
+        date: selectedDate,
+        title: spentDescription,
+      });
+      resetInputFields();
+      return;
+    }
+
+    saveNewSpent(spent, spentDescription, selectedDate);
+  };
 
   return (
     <Modal
@@ -151,9 +201,7 @@ export default function ({
           <View style={{width: '45%'}}>
             <Button
               title="salvar"
-              onPress={() =>
-                saveNewSpent(spent, spentDescription, selectedDate)
-              }
+              onPress={onSaveButtonPress}
               color={colors.blue}
               disabled={!spentDescription || !spent || !selectedDate}
             />

@@ -1,6 +1,6 @@
 import {Text, Pressable, StyleSheet} from 'react-native';
 import {Calendar} from 'react-native-calendars';
-import colors from '../../constants/colors';
+// import colors from '../../constants/colors';
 
 type PropTypes = {
   setSelectedDate: any;
