@@ -16,10 +16,10 @@ export default function ({currentItems, title}: ItemProps) {
           ? styles.container
           : {...styles.container, justifyContent: 'center'}
       }>
-      <View style={{alignItems: 'center', backgroundColor: 'red'}}>
+      <View>
         <Image
           source={bg}
-          style={{width: 135, height: 80, objectFit: 'contain'}}
+          style={{width: 90, height: 50, objectFit: 'cover'}}
         />
       </View>
       <Text style={styles.title}>{title ? title : ''}</Text>
@@ -31,8 +31,8 @@ export default function ({currentItems, title}: ItemProps) {
             currency: 'BRL',
           }).format(
             currentItems?.reduce(
-              (accumulator: number, currentValue: {value: number}) =>
-                accumulator + currentValue.value,
+              (accumulator: number, currentValue: {spentValue: number}) =>
+                accumulator + currentValue.spentValue,
               0,
             ),
           )}
@@ -44,12 +44,13 @@ export default function ({currentItems, title}: ItemProps) {
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 16,
+    // paddingVertical: 16,
     paddingHorizontal: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: colors.yellow,
+    height: 80,
   },
   title: {
     fontWeight: 'bold',

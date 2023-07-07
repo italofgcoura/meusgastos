@@ -13,8 +13,7 @@ import {
 import Calendar from '../Calendar';
 import colors from '../../constants/colors';
 import Header from '../Header';
-
-type Item = {title: string; value: number; id: string; date: string};
+import {Spent} from '../../interfaces/spent';
 
 type ItemProps = {
   showModal: boolean;
@@ -22,9 +21,9 @@ type ItemProps = {
   currentItems: any;
   setCurrentItems: React.Dispatch<React.SetStateAction<any>>;
   saveToStorage: (newItems: any) => void;
-  editItem: ({id, value, date, title}: Item) => void;
-  setItemToEdit: React.Dispatch<React.SetStateAction<Item | undefined>>;
-  itemToEdit?: Item;
+  editItem: ({id, spentValue, date, description}: Spent) => void;
+  setItemToEdit: React.Dispatch<React.SetStateAction<Spent | undefined>>;
+  itemToEdit?: Spent;
 };
 
 export default function ({
@@ -41,9 +40,7 @@ export default function ({
   const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [spentDescription, setSpentDescription] = useState<string>('');
-  const [spent, setNewSpent] = useState<string | number>('');
-
-  console.log('  itemToEdit', itemToEdit);
+  const [spent, setNewSpent] = useState<number>(0.0);
 
   useEffect(() => {
     const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
@@ -57,8 +54,8 @@ export default function ({
 
   useEffect(() => {
     if (itemToEdit) {
-      setNewSpent(itemToEdit.value.toString());
-      setSpentDescription(itemToEdit.title);
+      setNewSpent(itemToEdit.spentValue);
+      setSpentDescription(itemToEdit.description);
       setSelectedDate(itemToEdit.date);
     }
   }, [itemToEdit]);
@@ -76,11 +73,11 @@ export default function ({
   };
 
   const resetInputFields = useCallback(() => {
-    setNewSpent('');
+    setNewSpent(0.0);
     setSpentDescription('');
     setSelectedDate('');
     setItemToEdit(undefined);
-  }, []);
+  }, [setItemToEdit]);
 
   const saveNewSpent = useCallback(
     async (
@@ -91,8 +88,8 @@ export default function ({
       const oldItems = [...currentItems];
 
       oldItems.push({
-        title: description,
-        value: Number(newSpend),
+        description: description,
+        spentValue: Number(newSpend),
         id: Math.random().toString(),
         date: date,
       });
@@ -112,9 +109,9 @@ export default function ({
     if (itemToEdit) {
       editItem({
         id: itemToEdit.id,
-        value: Number(spent),
+        spentValue: Number(spent),
         date: selectedDate,
-        title: spentDescription,
+        description: spentDescription,
       });
       resetInputFields();
       return;
@@ -154,8 +151,8 @@ export default function ({
                 marginTop: 16,
                 padding: 8,
               }}
-              onChangeText={text => setNewSpent(text)}
-              value={spent}
+              onChangeText={text => setNewSpent(Number(text))}
+              value={spent.toString()}
               onFocus={inputFocus}
               onBlur={inputBlur}
             />

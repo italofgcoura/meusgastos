@@ -14,17 +14,18 @@ import ListItem from './src/components/ListItem';
 
 import Header from './src/components/Header';
 import NewSpent from './src/components/NewSpent';
+import MonthFilter from './src/components/MonthFilter';
 
-type ItemProps = {title: string; value: number; id: string; date: string};
+import {Spent} from './src/interfaces/spent';
 
 function App(): JSX.Element {
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  const [currentItems, setCurrentItems] = useState<ItemProps[]>([]);
+  const [currentItems, setCurrentItems] = useState<Spent[]>([]);
 
-  const [itemToEdit, setItemToEdit] = useState<ItemProps | undefined>(
-    undefined,
-  );
+  const [itemToEdit, setItemToEdit] = useState<Spent | undefined>(undefined);
+
+  const [selectedMonthFilter, setSelectedMonthFilter] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -64,16 +65,16 @@ function App(): JSX.Element {
     [currentItems, saveToStorage],
   );
 
-  const editItem = ({id, value, date, title}: ItemProps) => {
-    const item = currentItems.find((i: ItemProps) => i.id === id);
+  const editItem = ({id, spentValue, date, description}: Spent) => {
+    const item = currentItems.find((i: Spent) => i.id === id);
 
     if (item !== undefined) {
-      item.value = value;
+      item.spentValue = spentValue;
       item.date = date;
-      item.title = title;
+      item.description = description;
     }
 
-    const oldItems = currentItems.filter(item => item.id !== id);
+    const oldItems = currentItems.filter(i => i.id !== id);
 
     if (item) {
       oldItems.push(item);
@@ -83,11 +84,11 @@ function App(): JSX.Element {
     }
   };
 
-  const onEditPress = (item: ItemProps) => {
+  const onEditPress = (item: Spent) => {
     setItemToEdit(item);
     setShowModal(true);
   };
-
+  console.log(currentItems);
   return (
     <>
       <StatusBar />
@@ -104,13 +105,12 @@ function App(): JSX.Element {
       />
 
       <Header currentItems={currentItems} />
-      {/* <View style={{padding: 16, flexGrow: 1}}> */}
       <FlatList
         data={currentItems}
         renderItem={({item}) => (
           <ListItem
-            title={item.title}
-            value={item.value}
+            description={item.description}
+            spentValue={item.spentValue}
             id={item.id}
             date={item.date}
             removeItem={removeItem}
@@ -136,7 +136,10 @@ function App(): JSX.Element {
           color={'#235789'}
         />
       </View>
-      {/* <MonthFilter /> */}
+      <MonthFilter
+        selectedMonthFilter={selectedMonthFilter}
+        setSelectedMonthFilter={setSelectedMonthFilter}
+      />
     </>
   );
 }

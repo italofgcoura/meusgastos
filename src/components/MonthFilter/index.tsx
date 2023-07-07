@@ -1,14 +1,20 @@
 import {ScrollView, Text, View} from 'react-native';
 
-export default function () {
+type PropsType = {
+  selectedMonthFilter: string;
+  setSelectedMonthFilter: React.Dispatch<React.SetStateAction<string>>;
+};
+
+export default function ({
+  selectedMonthFilter,
+  setSelectedMonthFilter,
+}: PropsType) {
   return (
     <View>
       <ScrollView
         style={{
           marginTop: 16,
-          // marginBottom: 8,
           gap: 4,
-          // backgroundColor: 'green',
           height: 'auto',
           paddingBottom: 16,
         }}
@@ -18,7 +24,6 @@ export default function () {
             marginHorizontal: 4,
             height: 40,
             width: 40,
-            // backgroundColor: 'red',
             borderWidth: 2,
             borderColor: '#d1d1d1',
             justifyContent: 'center',
@@ -31,7 +36,7 @@ export default function () {
             marginHorizontal: 4,
             height: 40,
             width: 40,
-            // backgroundColor: 'red',
+
             borderWidth: 2,
             borderColor: '#d1d1d1',
             justifyContent: 'center',

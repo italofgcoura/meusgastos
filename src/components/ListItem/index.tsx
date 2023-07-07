@@ -6,20 +6,20 @@ import Pencil from '../../../assets/edit_white_24dp.svg';
 import colors from '../../constants/colors';
 import {useState} from 'react';
 
-type Item = {title: string; value: number; id: string; date: string};
+import {Spent} from '../../interfaces/spent';
 
 type ItemProps = {
-  title: string;
-  value: number;
+  description: string;
+  spentValue: number;
   id: string;
   date: string;
   removeItem: (id: string) => void;
-  onEditPress: (item: Item) => void;
+  onEditPress: (item: Spent) => void;
 };
 
 export default function ({
-  title,
-  value,
+  description,
+  spentValue,
   id,
   date,
   removeItem,
@@ -37,7 +37,7 @@ export default function ({
     borderColor: colors.blue,
   };
 
-  console.log(date);
+  console.log(spentValue);
 
   return (
     <>
@@ -91,11 +91,13 @@ export default function ({
             {new Intl.NumberFormat('pt-BR', {
               style: 'currency',
               currency: 'BRL',
-            }).format(value)}
+            }).format(spentValue)}
           </Text>
         </View>
         <Text style={styles.text}>
-          {title?.length >= 50 ? title.substring(0, 50).concat('...') : title}
+          {description?.length >= 50
+            ? description.substring(0, 50).concat('...')
+            : description}
         </Text>
 
         <View style={styles.buttonsContainer}>
@@ -110,8 +112,8 @@ export default function ({
           <Pressable
             onPress={() =>
               onEditPress({
-                title,
-                value,
+                description,
+                spentValue,
                 id,
                 date,
               })
