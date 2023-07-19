@@ -37,8 +37,6 @@ export default function ({
     borderColor: colors.blue,
   };
 
-  console.log(spentValue);
-
   return (
     <>
       <Modal visible={showModal} animationType="fade" transparent>

@@ -7,6 +7,7 @@ import {
   View,
   FlatList,
   StyleSheet,
+  SafeAreaView,
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -25,7 +26,7 @@ function App(): JSX.Element {
 
   const [itemToEdit, setItemToEdit] = useState<Spent | undefined>(undefined);
 
-  const [selectedMonthFilter, setSelectedMonthFilter] = useState('');
+  const [selectedMonthFilter, setSelectedMonthFilter] = useState<string>('');
 
   useEffect(() => {
     (async () => {
@@ -88,15 +89,20 @@ function App(): JSX.Element {
     setItemToEdit(item);
     setShowModal(true);
   };
-  console.log(currentItems);
-  return (
-    <>
-      <StatusBar />
 
+  const items = selectedMonthFilter
+    ? currentItems.filter(
+        i => new Date(i.date).getMonth().toString() === selectedMonthFilter,
+      )
+    : currentItems;
+
+  return (
+    <SafeAreaView style={{flex: 1}}>
+      <StatusBar />
       <NewSpent
         showModal={showModal}
         setShowModal={setShowModal}
-        currentItems={currentItems}
+        currentItems={items}
         setCurrentItems={setCurrentItems}
         saveToStorage={saveToStorage}
         itemToEdit={itemToEdit}
@@ -104,9 +110,9 @@ function App(): JSX.Element {
         setItemToEdit={setItemToEdit}
       />
 
-      <Header currentItems={currentItems} />
+      <Header currentItems={items} />
       <FlatList
-        data={currentItems}
+        data={items}
         renderItem={({item}) => (
           <ListItem
             description={item.description}
@@ -126,7 +132,6 @@ function App(): JSX.Element {
           </View>
         )}
       />
-      {/* </View> */}
       <View>
         <Button
           title="NOVA DESPESA"
@@ -140,7 +145,7 @@ function App(): JSX.Element {
         selectedMonthFilter={selectedMonthFilter}
         setSelectedMonthFilter={setSelectedMonthFilter}
       />
-    </>
+    </SafeAreaView>
   );
 }
 
@@ -149,7 +154,6 @@ export default App;
 const styles = StyleSheet.create({
   noData: {
     flex: 1,
-    // flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'pink',

@@ -1,13 +1,66 @@
-import {ScrollView, Text, View} from 'react-native';
+import {ScrollView, View} from 'react-native';
+
+import MonthSelector from './MonthSelector';
 
 type PropsType = {
   selectedMonthFilter: string;
   setSelectedMonthFilter: React.Dispatch<React.SetStateAction<string>>;
 };
 
+const months = [
+  {
+    monthName: 'JAN',
+    monthIndex: 0,
+  },
+  {
+    monthName: 'FEV',
+    monthIndex: 1,
+  },
+  {
+    monthName: 'MAR',
+    monthIndex: 2,
+  },
+  {
+    monthName: 'ABR',
+    monthIndex: 3,
+  },
+  {
+    monthName: 'MAI',
+    monthIndex: 4,
+  },
+  {
+    monthName: 'JUN',
+    monthIndex: 5,
+  },
+  {
+    monthName: 'JUL',
+    monthIndex: 6,
+  },
+  {
+    monthName: 'AGO',
+    monthIndex: 7,
+  },
+  {
+    monthName: 'SET',
+    monthIndex: 8,
+  },
+  {
+    monthName: 'OUT',
+    monthIndex: 9,
+  },
+  {
+    monthName: 'NOV',
+    monthIndex: 10,
+  },
+  {
+    monthName: 'DEZ',
+    monthIndex: 11,
+  },
+];
+
 export default function ({
-  selectedMonthFilter,
   setSelectedMonthFilter,
+  selectedMonthFilter,
 }: PropsType) {
   return (
     <View>
@@ -15,165 +68,18 @@ export default function ({
         style={{
           marginTop: 16,
           gap: 4,
-          height: 'auto',
           paddingBottom: 16,
+          height: 'auto',
+          // backgroundColor: 'red',
         }}
         horizontal>
-        <View
-          style={{
-            marginHorizontal: 4,
-            height: 40,
-            width: 40,
-            borderWidth: 2,
-            borderColor: '#d1d1d1',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text>JAN</Text>
-        </View>
-        <View
-          style={{
-            marginHorizontal: 4,
-            height: 40,
-            width: 40,
-
-            borderWidth: 2,
-            borderColor: '#d1d1d1',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text>FEV</Text>
-        </View>
-        <View
-          style={{
-            marginHorizontal: 4,
-            height: 40,
-            width: 40,
-            // backgroundColor: 'red',
-            borderWidth: 2,
-            borderColor: '#d1d1d1',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text>MAR</Text>
-        </View>
-        <View
-          style={{
-            marginHorizontal: 4,
-            height: 40,
-            width: 40,
-            // backgroundColor: 'red',
-            borderWidth: 2,
-            borderColor: '#d1d1d1',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text>ABR</Text>
-        </View>
-        <View
-          style={{
-            marginHorizontal: 4,
-            height: 40,
-            width: 40,
-            // backgroundColor: 'red',
-            borderWidth: 2,
-            borderColor: '#d1d1d1',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text>MAI</Text>
-        </View>
-        <View
-          style={{
-            marginHorizontal: 4,
-            height: 40,
-            width: 40,
-            // backgroundColor: 'red',
-            borderWidth: 2,
-            borderColor: '#d1d1d1',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text>JUN</Text>
-        </View>
-        <View
-          style={{
-            marginHorizontal: 4,
-            height: 40,
-            width: 40,
-            // backgroundColor: 'red',
-            borderWidth: 2,
-            borderColor: '#d1d1d1',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text>JUL</Text>
-        </View>
-        <View
-          style={{
-            marginHorizontal: 4,
-            height: 40,
-            width: 40,
-            // backgroundColor: 'red',
-            borderWidth: 2,
-            borderColor: '#d1d1d1',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text>AGO</Text>
-        </View>
-        <View
-          style={{
-            marginHorizontal: 4,
-            height: 40,
-            width: 40,
-            // backgroundColor: 'red',
-            borderWidth: 2,
-            borderColor: '#d1d1d1',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text>SET</Text>
-        </View>
-        <View
-          style={{
-            marginHorizontal: 4,
-            height: 40,
-            width: 40,
-            // backgroundColor: 'red',
-            borderWidth: 2,
-            borderColor: '#d1d1d1',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text>OUT</Text>
-        </View>
-        <View
-          style={{
-            marginHorizontal: 4,
-            height: 40,
-            width: 40,
-            // backgroundColor: 'red',
-            borderWidth: 2,
-            borderColor: '#d1d1d1',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text>NOV</Text>
-        </View>
-        <View
-          style={{
-            marginHorizontal: 4,
-            height: 40,
-            width: 40,
-            // backgroundColor: 'red',
-            borderWidth: 2,
-            borderColor: '#d1d1d1',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text>DEZ</Text>
-        </View>
+        {months.map(month => (
+          <MonthSelector
+            setSelectedMonthFilter={setSelectedMonthFilter}
+            selectedMonthFilter={selectedMonthFilter}
+            month={month}
+          />
+        ))}
       </ScrollView>
     </View>
   );
